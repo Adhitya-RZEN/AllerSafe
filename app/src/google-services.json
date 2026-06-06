@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "630335283739",
+    "project_id": "allersafe-7ad4e",
+    "storage_bucket": "allersafe-7ad4e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:630335283739:android:446958baf3539c79ad8ebe",
+        "android_client_info": {
+          "package_name": "com.example.allersafe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "630335283739-he44nnc6l5f937gkbmlt5a5m1d383ued.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.allersafe",
+            "certificate_hash": "4d98436794b5487e80cb0fae7aa14393e17af192"
+          }
+        },
+        {
+          "client_id": "630335283739-35abbigsgctu88q1r7o9k9jm38jmb2jl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAv4h3LLnqMum6L8bzJxXo3hXANavHC2sg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "630335283739-35abbigsgctu88q1r7o9k9jm38jmb2jl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
