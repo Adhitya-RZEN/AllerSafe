@@ -114,14 +114,26 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun firebaseAuthWithGoogle(idToken: String) {
+        // 1. Tampilkan status loading ke user
+        Toast.makeText(this, "Memproses login Google...", Toast.LENGTH_SHORT).show()
+
+        // 2. Nonaktifkan tombol agar tidak bisa diklik berulang kali
+        binding.btnGoogleLogin.isEnabled = false
+        binding.btnSubmitLogin.isEnabled = false
+
         lifecycleScope.launch {
             val result = authRepo.loginWithGoogle(idToken)
+
+            // 3. Aktifkan kembali tombol setelah proses selesai (baik sukses maupun gagal)
+            binding.btnGoogleLogin.isEnabled = true
+            binding.btnSubmitLogin.isEnabled = true
+
             if (result.isSuccess) {
                 suksesLogin()
             } else {
-                Toast.makeText(this@LoginActivity, "Gagal login dengan Google", Toast.LENGTH_SHORT).show()
-                binding.btnSubmitLogin.isEnabled = true
-                binding.btnSubmitLogin.text = "Login"
+                // Tangkap error jika koneksi gagal atau timeout
+                val pesanError = result.exceptionOrNull()?.message ?: "Gagal terhubung ke server"
+                Toast.makeText(this@LoginActivity, pesanError, Toast.LENGTH_SHORT).show()
             }
         }
     }

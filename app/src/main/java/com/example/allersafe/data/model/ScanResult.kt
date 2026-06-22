@@ -7,6 +7,7 @@ data class ScanResult(
     val userId: String = "",
     val productName: String = "",
     val productBrand: String = "",
+    val imageUrl: String = "", // Tambahkan field imageUrl
     val scanStatus: ScanStatus = ScanStatus.SAFE,
     val detectedAllergens: List<DetectedAllergen> = emptyList(),
     val crossContaminationWarnings: List<String> = emptyList(),
@@ -15,7 +16,8 @@ data class ScanResult(
 ) {
     fun toMap(): Map<String, Any> = mapOf(
         "id" to id, "userId" to userId, "productName" to productName,
-        "productBrand" to productBrand, "scanStatus" to scanStatus.name,
+        "productBrand" to productBrand, "imageUrl" to imageUrl, // Simpan imageUrl ke map
+        "scanStatus" to scanStatus.name,
         "detectedAllergens" to detectedAllergens.map { it.toMap() },
         "crossContaminationWarnings" to crossContaminationWarnings,
         "analyzedIngredients" to analyzedIngredients.map { it.toMap() },
@@ -29,6 +31,7 @@ data class ScanResult(
             userId = map["userId"] as? String ?: "",
             productName = map["productName"] as? String ?: "",
             productBrand = map["productBrand"] as? String ?: "",
+            imageUrl = map["imageUrl"] as? String ?: "", // Baca imageUrl dari map
             scanStatus = runCatching { ScanStatus.valueOf(map["scanStatus"] as? String ?: "SAFE") }.getOrDefault(ScanStatus.SAFE),
             detectedAllergens = (map["detectedAllergens"] as? List<Map<String, Any>>)?.map { DetectedAllergen.fromMap(it) } ?: emptyList(),
             crossContaminationWarnings = (map["crossContaminationWarnings"] as? List<String>) ?: emptyList(),

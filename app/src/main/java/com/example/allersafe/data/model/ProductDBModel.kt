@@ -5,6 +5,7 @@ data class ProductDBModel(
     val name: String = "",
     val normalizedName: String = "",
     val brand: String = "",
+    val imageUrl: String = "", // Tambahkan field imageUrl
     val ingredients: List<String> = emptyList(),
     val rawIngredientsText: String = "",
     val mayContainText: String = "",

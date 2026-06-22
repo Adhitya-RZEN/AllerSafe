@@ -30,13 +30,13 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
+            <!-- Potongan kode di item_history.xml -->
             <ImageView
                 android:id="@+id/imgProduct"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@android:drawable/ic_menu_gallery"
-                app:tint="@color/text_primary" />
+                android:src="@drawable/ic_placeholder_product" />
         </com.google.android.material.card.MaterialCardView>
 
         <TextView

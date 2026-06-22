@@ -17,7 +17,6 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRegispageBinding
     private val authRepo = AuthRepository()
 
-    // Diubah menjadi List Dinamis
     private val allergenList = mutableListOf<String>()
     private val selectedAllergens = mutableListOf<String>()
 
@@ -26,7 +25,6 @@ class RegisterActivity : AppCompatActivity() {
         binding = ActivityRegispageBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Mengambil daftar alergen dari database
         loadMasterAllergens()
 
         binding.btnSubmitDaftar.setOnClickListener {
@@ -47,13 +45,63 @@ class RegisterActivity : AppCompatActivity() {
                     return@setOnClickListener
                 }
 
-                // Logika Pemetaan Pintar (Menggunakan contains agar lebih dinamis)
+                // BUG #2 FIX: Semua 8 jenis alergen sekarang dipetakan dengan benar.
+                // Sebelumnya SOY, TREE_NUT, dan FISH tidak disertakan sehingga
+                // profil alergi pengguna yang memilih jenis tersebut tidak pernah tersimpan.
                 val profile = AllergenProfile(
-                    milk = selectedAllergens.any { it.contains("Susu", true) || it.contains("Keju", true) },
-                    egg = selectedAllergens.any { it.contains("Telur", true) },
-                    wheat = selectedAllergens.any { it.contains("Gluten", true) || it.contains("Gandum", true) },
-                    shellfish = selectedAllergens.any { it.contains("Seafood", true) || it.contains("Udang", true) },
-                    peanut = selectedAllergens.any { it.contains("Kacang", true) }
+                    milk     = selectedAllergens.any {
+                        it.contains("Susu", ignoreCase = true) ||
+                                it.contains("Keju", ignoreCase = true) ||
+                                it.contains("Dairy", ignoreCase = true)
+                    },
+                    egg      = selectedAllergens.any {
+                        it.contains("Telur", ignoreCase = true) ||
+                                it.contains("Egg", ignoreCase = true)
+                    },
+                    wheat    = selectedAllergens.any {
+                        it.contains("Gluten", ignoreCase = true) ||
+                                it.contains("Gandum", ignoreCase = true) ||
+                                it.contains("Wheat", ignoreCase = true) ||
+                                it.contains("Tepung", ignoreCase = true)
+                    },
+                    // --- PERBAIKAN: SOY sebelumnya tidak ada sama sekali ---
+                    soy      = selectedAllergens.any {
+                        it.contains("Kedelai", ignoreCase = true) ||
+                                it.contains("Soy", ignoreCase = true) ||
+                                it.contains("Tahu", ignoreCase = true) ||
+                                it.contains("Tempe", ignoreCase = true) ||
+                                it.contains("Kecap", ignoreCase = true)
+                    },
+                    peanut   = selectedAllergens.any {
+                        it.contains("Kacang", ignoreCase = true) ||
+                                it.contains("Peanut", ignoreCase = true)
+                    },
+                    // --- PERBAIKAN: TREE_NUT sebelumnya tidak ada sama sekali ---
+                    treeNut  = selectedAllergens.any {
+                        it.contains("Almond", ignoreCase = true) ||
+                                it.contains("Mete", ignoreCase = true) ||
+                                it.contains("Cashew", ignoreCase = true) ||
+                                it.contains("Walnut", ignoreCase = true) ||
+                                it.contains("Hazelnut", ignoreCase = true) ||
+                                it.contains("Kacang Pohon", ignoreCase = true) ||
+                                it.contains("Tree Nut", ignoreCase = true) ||
+                                it.contains("Pistachio", ignoreCase = true)
+                    },
+                    // --- PERBAIKAN: FISH sebelumnya tidak ada sama sekali ---
+                    fish     = selectedAllergens.any {
+                        it.contains("Ikan", ignoreCase = true) ||
+                                it.contains("Fish", ignoreCase = true) ||
+                                it.contains("Salmon", ignoreCase = true) ||
+                                it.contains("Tuna", ignoreCase = true) ||
+                                it.contains("Teri", ignoreCase = true)
+                    },
+                    shellfish = selectedAllergens.any {
+                        it.contains("Seafood", ignoreCase = true) ||
+                                it.contains("Udang", ignoreCase = true) ||
+                                it.contains("Kerang", ignoreCase = true) ||
+                                it.contains("Kepiting", ignoreCase = true) ||
+                                it.contains("Cumi", ignoreCase = true)
+                    }
                 )
 
                 Toast.makeText(this, "Memproses pendaftaran...", Toast.LENGTH_SHORT).show()
@@ -85,8 +133,11 @@ class RegisterActivity : AppCompatActivity() {
             allergenList.clear()
             allergenList.addAll(listFromDb)
 
-            // Set adapter setelah data dari database selesai diunduh
-            val adapter = ArrayAdapter(this@RegisterActivity, android.R.layout.simple_dropdown_item_1line, allergenList)
+            val adapter = ArrayAdapter(
+                this@RegisterActivity,
+                android.R.layout.simple_dropdown_item_1line,
+                allergenList
+            )
             binding.autoCompleteAllergen.setAdapter(adapter)
 
             binding.autoCompleteAllergen.setOnItemClickListener { parent, _, position, _ ->

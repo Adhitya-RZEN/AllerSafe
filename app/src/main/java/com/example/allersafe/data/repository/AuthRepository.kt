@@ -37,6 +37,26 @@ class AuthRepository {
             user
         }
     }
+    suspend fun sendEmailVerification(): Result<Unit> {
+        return try {
+            auth.currentUser?.sendEmailVerification()?.await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    suspend fun isEmailVerified(): Boolean {
+        auth.currentUser?.reload()?.await()
+        return auth.currentUser?.isEmailVerified ?: false
+    }
+    suspend fun resetPassword(email: String): Result<Unit> {
+        return try {
+            auth.sendPasswordResetEmail(email).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 
     suspend fun getEmailByUsername(username: String): String? = runCatching {
         withTimeout(TIMEOUT_DURATION) {

@@ -18,6 +18,9 @@ class ScanRepository {
         private const val COLLECTION_USERS = "users"
         private const val SUBCOLLECTION_HISTORY = "history"
         private const val TIMEOUT_DURATION = 10000L
+
+        private const val PAGE_SIZE_SINGLE = 10
+        private const val PAGE_SIZE_MULTIPLE = 30
     }
 
     private val retrofit = Retrofit.Builder()
@@ -30,24 +33,32 @@ class ScanRepository {
     suspend fun findProductFromAPI(queryName: String): ProductDBModel? = runCatching {
         withTimeout(TIMEOUT_DURATION) {
             val cleanQuery = queryName.trim().lowercase()
-            val response = api.searchProducts(searchQuery = cleanQuery)
+
+            val response = api.searchProducts(
+                searchQuery = cleanQuery,
+                pageSize = PAGE_SIZE_SINGLE
+            )
 
             if (response.isSuccessful && response.body() != null) {
                 val results = response.body()!!.products
 
-                val validProduct = results.firstOrNull {
-                    !it.ingredientsText.isNullOrEmpty() &&
-                            (it.productName?.lowercase()?.contains(cleanQuery) == true)
+                val productsWithIngredients = results.filter {
+                    !it.ingredientsText.isNullOrEmpty()
                 }
 
-                if (validProduct != null) {
-                    val finalName = validProduct.productName ?: queryName
+                val bestMatch = productsWithIngredients.firstOrNull {
+                    it.productName?.lowercase()?.contains(cleanQuery) == true
+                } ?: productsWithIngredients.firstOrNull()
+
+                if (bestMatch != null) {
+                    val finalName = bestMatch.productName ?: queryName
                     return@withTimeout ProductDBModel(
                         id = UUID.randomUUID().toString(),
                         name = finalName,
                         normalizedName = ProductDBModel.normalizeName(finalName),
-                        brand = validProduct.brands ?: "Tidak diketahui",
-                        rawIngredientsText = validProduct.ingredientsText!!
+                        brand = bestMatch.brands ?: "Tidak diketahui",
+                        imageUrl = bestMatch.imageUrl ?: "", // Mapping imageUrl
+                        rawIngredientsText = bestMatch.ingredientsText!!
                     )
                 }
             }
@@ -66,9 +77,12 @@ class ScanRepository {
 
     suspend fun searchMultipleProducts(queryName: String): List<ProductDBModel> {
         return withTimeout(TIMEOUT_DURATION) {
-            // FIXED: Selalu lowercase agar "Indomilk" dan "indomilk" hasilnya sama
             val cleanQuery = queryName.trim().lowercase()
-            val response = api.searchProducts(searchQuery = cleanQuery, pageSize = 30)
+
+            val response = api.searchProducts(
+                searchQuery = cleanQuery,
+                pageSize = PAGE_SIZE_MULTIPLE
+            )
 
             if (response.isSuccessful && response.body() != null) {
                 val results = response.body()!!.products
@@ -80,6 +94,7 @@ class ScanRepository {
                         ProductDBModel(
                             name = validName,
                             brand = item.brands ?: "Tidak diketahui",
+                            imageUrl = item.imageUrl ?: "", // Mapping imageUrl
                             rawIngredientsText = item.ingredientsText ?: ""
                         )
                     } else null

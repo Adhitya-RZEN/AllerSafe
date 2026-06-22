@@ -7,6 +7,13 @@
     android:paddingHorizontal="8dp"
     android:background="?attr/selectableItemBackground">
 
+    <ImageView
+        android:id="@+id/imgSearchProduct"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="12dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_placeholder_product" />
     <TextView
         android:id="@+id/tvProductName"
         android:layout_width="match_parent"

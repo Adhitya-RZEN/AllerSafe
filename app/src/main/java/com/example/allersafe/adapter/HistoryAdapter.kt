@@ -3,21 +3,24 @@ package com.example.allersafe.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.allersafe.R
 import com.example.allersafe.data.model.ScanResult
+import com.example.allersafe.data.model.ScanStatus
 
 class HistoryAdapter(
     private var historyList: List<ScanResult>,
-    // Ini adalah listener baru yang akan mengirimkan data saat item diklik
     private val onItemClick: (ScanResult) -> Unit
 ) : RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        // PERBAIKAN: Menggunakan ID yang benar dari item_history.xml
         val tvName: TextView = view.findViewById(R.id.tvProductName)
         val tvAllergen: TextView = view.findViewById(R.id.tvAllergenType)
+        val imgProduct: ImageView = view.findViewById(R.id.imgProduct)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -29,20 +32,62 @@ class HistoryAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val result = historyList[position]
 
-        holder.tvName.text = result.productName
-        
-        // Menampilkan brand produk di baris kedua
-        holder.tvAllergen.text = result.productBrand
+        // Baris 1: Nama produk (dan brand jika tersedia)
+        holder.tvName.text = if (result.productBrand.isNotBlank()) {
+            "${result.productName} · ${result.productBrand}"
+        } else {
+            result.productName
+        }
 
-        // Memberikan aksi klik pada keseluruhan Card/Item
+        // Memuat Gambar Produk menggunakan Glide
+        Glide.with(holder.itemView.context)
+            .load(result.imageUrl.ifEmpty { null })
+            .placeholder(R.drawable.ic_placeholder_product) // Pastikan drawable ini ada
+            .error(R.drawable.ic_placeholder_product)
+            .into(holder.imgProduct)
+
+        // Reset tint jika sebelumnya ada tint pada placeholder
+        if (result.imageUrl.isNotEmpty()) {
+            holder.imgProduct.imageTintList = null
+        }
+
+        // Baris 2: Alergen terdeteksi ATAU status scan
+        when {
+            result.detectedAllergens.isNotEmpty() -> {
+                val allergenNames = result.detectedAllergens
+                    .joinToString(", ") { it.allergenType.indonesianName }
+                holder.tvAllergen.text = "⚠ Mengandung: $allergenNames"
+                holder.tvAllergen.setTextColor(
+                    ContextCompat.getColor(holder.itemView.context, R.color.alert_danger)
+                )
+            }
+            result.crossContaminationWarnings.isNotEmpty() -> {
+                holder.tvAllergen.text = "⚡ Potensi kontaminasi silang"
+                holder.tvAllergen.setTextColor(
+                    ContextCompat.getColor(holder.itemView.context, R.color.accent_primary)
+                )
+            }
+            result.scanStatus == ScanStatus.SAFE -> {
+                holder.tvAllergen.text = "✓ Aman dikonsumsi"
+                holder.tvAllergen.setTextColor(
+                    ContextCompat.getColor(holder.itemView.context, R.color.accent_primary)
+                )
+            }
+            else -> {
+                holder.tvAllergen.text = result.scanStatus.name
+                holder.tvAllergen.setTextColor(
+                    ContextCompat.getColor(holder.itemView.context, R.color.text_secondary)
+                )
+            }
+        }
+
         holder.itemView.setOnClickListener {
-            onItemClick(result) // Mengirimkan data produk yang diklik kembali ke MainActivity
+            onItemClick(result)
         }
     }
 
     override fun getItemCount() = historyList.size
 
-    // Fungsi untuk memperbarui data saat ada scan baru / ditarik dari database
     fun updateData(newList: List<ScanResult>) {
         historyList = newList
         notifyDataSetChanged()
