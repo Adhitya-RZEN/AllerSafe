@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Background & Surface (Menggunakan Dark Slate, BUKAN Hitam Pekat) -->
-    <color name="bg_main">#111827</color> <!-- Tailwind Gray 900: Latar belakang utama -->
-    <color name="surface_card">#1F2937</color> <!-- Tailwind Gray 800: Card lebih terang agar tampak menonjol/elevasi -->
 
-    <!-- Typography (Dibalik dari Light Mode) -->
-    <color name="text_primary">#F9FAFB</color> <!-- Putih tulang (Off-white), bukan putih menyilaukan -->
-    <color name="text_secondary">#9CA3AF</color> <!-- Abu-abu tengah untuk teks pendukung -->
-
-    <!-- Brand & Accents (Disesuaikan saturasinya untuk background gelap) -->
-    <color name="accent_primary">#34D399</color> <!-- Emerald 400: Dibuat sedikit lebih terang agar kontras terbaca di latar gelap -->
-    <color name="border_color">#374151</color> <!-- Garis pembatas (stroke) abu-abu gelap -->
-
-    <!-- Semantic Colors (Alergi/Bahaya) -->
-    <color name="danger_text">#FCA5A5</color> <!-- Teks merah terang / pastel agar mudah dibaca -->
-    <color name="danger_bg">#450A0A</color> <!-- Background chip merah sangat gelap -->
+    <color name="bg_main">#111827</color>
+    <color name="surface_card">#1F2937</color>
+    <color name="text_primary">#F9FAFB</color>
+    <color name="text_secondary">#9CA3AF</color>
+    <color name="bg_input">#374151</color>"
+    <color name="accent_primary">#ABDC3D</color>
+    <color name="border_color">#374151</color>
+    <color name="alergen_safe">#ABDC3D</color>
+    <color name="danger_text">#FCA5A5</color>
+    <color name="danger_bg">#450A0A</color>
 </resources>

@@ -13,10 +13,8 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.allersafe.R
-import com.example.allersafe.adapter.AllergenPlainAdapter
 import com.example.allersafe.data.model.AllergenProfile
 import com.example.allersafe.data.model.AllergenType
 import com.example.allersafe.data.repository.AuthRepository
@@ -32,10 +30,10 @@ class ProfileFragment : Fragment() {
     private val binding get() = _binding!!
 
     private var profileImageUri: Uri? = null
+    private var currentProfileImageUrl: String = "" // Simpan URL foto lama di sini
     private val authRepo = AuthRepository()
     private val allergenList = mutableListOf<String>()
     private val selectedAllergens = mutableListOf<String>()
-    private lateinit var allergenAdapter: AllergenPlainAdapter
 
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -63,10 +61,6 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         switchMode(isEditMode = false)
-
-        allergenAdapter = AllergenPlainAdapter(emptyList())
-        binding.rvViewAllergens.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvViewAllergens.adapter = allergenAdapter
 
         setupAutoComplete()
         loadProfileDataFromDatabase()
@@ -164,6 +158,16 @@ class ProfileFragment : Fragment() {
         binding.chipGroupEditAllergen.addView(chip)
     }
 
+    private fun addChipToView(allergen: String) {
+        val chip = Chip(requireContext()).apply {
+            text = allergen
+            isClickable = false
+            setChipBackgroundColorResource(R.color.bg_main)
+            setTextColor(requireContext().getColor(R.color.text_primary))
+        }
+        binding.cgViewAllergens.addView(chip)
+    }
+
     private fun loadProfileDataFromDatabase() {
         val uid = authRepo.getCurrentUser()?.uid ?: return
         viewLifecycleOwner.lifecycleScope.launch {
@@ -181,16 +185,20 @@ class ProfileFragment : Fragment() {
                 binding.etEditDOB.setText(user.dob)
                 binding.etEditGender.setText(user.gender)
 
-                val url = user.profileImageUrl.ifEmpty { authRepo.getCurrentUser()?.photoUrl?.toString() ?: "" }
-                if (url.isNotEmpty()) {
-                    Glide.with(this@ProfileFragment).load(url).circleCrop().into(binding.imgViewProfile)
-                    Glide.with(this@ProfileFragment).load(url).circleCrop().into(binding.imgEditProfile)
+                // Simpan URL foto yang ada sekarang ke currentProfileImageUrl
+                currentProfileImageUrl = user.profileImageUrl.ifEmpty { authRepo.getCurrentUser()?.photoUrl?.toString() ?: "" }
+                
+                if (currentProfileImageUrl.isNotEmpty()) {
+                    Glide.with(this@ProfileFragment).load(currentProfileImageUrl).circleCrop().into(binding.imgViewProfile)
+                    Glide.with(this@ProfileFragment).load(currentProfileImageUrl).circleCrop().into(binding.imgEditProfile)
                     binding.imgViewProfile.imageTintList = null
                     binding.imgEditProfile.imageTintList = null
                 }
 
                 selectedAllergens.clear()
                 binding.chipGroupEditAllergen.removeAllViews()
+                binding.cgViewAllergens.removeAllViews()
+                
                 val profile = user.allergenProfile
                 if (profile.milk)      selectedAllergens.add(AllergenType.MILK.indonesianName)
                 if (profile.egg)       selectedAllergens.add(AllergenType.EGG.indonesianName)
@@ -201,11 +209,17 @@ class ProfileFragment : Fragment() {
                 if (profile.fish)      selectedAllergens.add(AllergenType.FISH.indonesianName)
                 if (profile.shellfish) selectedAllergens.add(AllergenType.SHELLFISH.indonesianName)
 
-                if (selectedAllergens.isEmpty()) {
-                    allergenAdapter.updateData(listOf("Belum ada alergen"))
+                binding.tvAllergenCount.text = if (selectedAllergens.isEmpty()) {
+                    "Tidak ada alergen aktif"
                 } else {
-                    allergenAdapter.updateData(selectedAllergens.toList())
-                    selectedAllergens.forEach { addChipToEdit(it) }
+                    "${selectedAllergens.size} Alergen Aktif"
+                }
+
+                if (selectedAllergens.isNotEmpty()) {
+                    selectedAllergens.forEach { 
+                        addChipToView(it)
+                        addChipToEdit(it)
+                    }
                 }
             }
         }
@@ -230,7 +244,8 @@ class ProfileFragment : Fragment() {
                 displayName = binding.etEditUsername.text.toString(),
                 dob = binding.etEditDOB.text.toString(),
                 gender = binding.etEditGender.text.toString(),
-                profileImageUrl = profileImageUri?.toString() ?: "",
+                // Gunakan profileImageUri jika ada (foto baru dipilih), jika tidak gunakan currentProfileImageUrl
+                profileImageUrl = profileImageUri?.toString() ?: currentProfileImageUrl,
                 allergenProfile = newProfile
             )
             binding.btnSaveProfile.isEnabled = true

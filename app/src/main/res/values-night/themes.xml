@@ -16,8 +16,8 @@
 
         <item name="popupMenuStyle">@style/MinimalistPopupMenu</item>
         <item name="android:popupMenuStyle">@style/MinimalistPopupMenu</item>
-        <item name="android:fontFamily">@font/chopra_expanded</item>
-        <item name="fontFamily">@font/chopra_expanded</item>
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="fontFamily">@font/poppins</item>
     </style>
 
     <style name="MinimalistPopupMenu" parent="Widget.MaterialComponents.PopupMenu">

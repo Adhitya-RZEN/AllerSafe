@@ -17,8 +17,11 @@ class HistoryAdapter(
     private val onItemClick: (ScanResult) -> Unit
 ) : RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
 
+    // 1. TAMBAHKAN tvBrand dan tvScanTime di sini agar terhubung dengan XML baru
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvName: TextView = view.findViewById(R.id.tvProductName)
+        val tvBrand: TextView = view.findViewById(R.id.tvProductBrand)
+        val tvScanTime: TextView = view.findViewById(R.id.tvScanTime)
         val tvAllergen: TextView = view.findViewById(R.id.tvAllergenWarning)
         val imgProduct: ImageView = view.findViewById(R.id.imgProduct)
     }
@@ -32,26 +35,33 @@ class HistoryAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val result = historyList[position]
 
-        // Baris 1: Nama produk (dan brand jika tersedia)
-        holder.tvName.text = if (result.productBrand.isNotBlank()) {
-            "${result.productName} · ${result.productBrand}"
+        // 2. SET NAMA PRODUK
+        holder.tvName.text = result.productName
+
+        // 3. LOGIC BRAND: Sembunyikan jika kosong, tampilkan jika ada
+        if (result.productBrand.isBlank()) {
+            holder.tvBrand.visibility = View.GONE
         } else {
-            result.productName
+            holder.tvBrand.visibility = View.VISIBLE
+            holder.tvBrand.text = result.productBrand
         }
 
-        // Memuat Gambar Produk menggunakan Glide
+        // 4. SET WAKTU SCAN (Sesuai instruksi: Tampilkan "Baru Dipindai" jika tidak ada data waktu)
+        // Jika model ScanResult Anda punya data waktu, Anda bisa menggantinya di sini.
+        holder.tvScanTime.text = "Baru Dipindai"
+
+        // 5. MEMUAT GAMBAR
         Glide.with(holder.itemView.context)
             .load(result.imageUrl.ifEmpty { null })
-            .placeholder(R.drawable.ic_placeholder_product) // Pastikan drawable ini ada
+            .placeholder(R.drawable.ic_placeholder_product)
             .error(R.drawable.ic_placeholder_product)
             .into(holder.imgProduct)
 
-        // Reset tint jika sebelumnya ada tint pada placeholder
         if (result.imageUrl.isNotEmpty()) {
             holder.imgProduct.imageTintList = null
         }
 
-        // Baris 2: Alergen terdeteksi ATAU status scan
+        // 6. LOGIC ALERGEN
         when {
             result.detectedAllergens.isNotEmpty() -> {
                 val allergenNames = result.detectedAllergens
@@ -62,7 +72,7 @@ class HistoryAdapter(
                 )
             }
             result.crossContaminationWarnings.isNotEmpty() -> {
-                holder.tvAllergen.text = "⚡ Potensi kontaminasi silang"
+                holder.tvAllergen.text = "⚡ Potensi kontaminasi"
                 holder.tvAllergen.setTextColor(
                     ContextCompat.getColor(holder.itemView.context, R.color.accent_primary)
                 )
@@ -70,7 +80,7 @@ class HistoryAdapter(
             result.scanStatus == ScanStatus.SAFE -> {
                 holder.tvAllergen.text = "✓ Aman dikonsumsi"
                 holder.tvAllergen.setTextColor(
-                    ContextCompat.getColor(holder.itemView.context, R.color.accent_primary)
+                    ContextCompat.getColor(holder.itemView.context, R.color.alergen_safe)
                 )
             }
             else -> {

@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Warna saat menu aktif/dipilih (Hijau Terang) -->
-    <item android:state_checked="true" android:color="@color/accent_primary" />
+    <item android:color="@color/accent_primary" android:state_checked="true" />
 
-    <!-- Warna saat menu tidak aktif (Teks Sekunder / Abu-abu) -->
     <item android:color="@color/text_secondary" />
 </selector>

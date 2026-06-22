@@ -46,23 +46,111 @@
                     android:layout_marginBottom="24dp" />
 
                 <!-- (Isi form di bawahnya sama persis seperti sebelumnya) -->
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Username" android:textColor="@color/text_primary" android:textSize="12sp" />
-                <EditText android:id="@+id/etUsername" android:layout_width="match_parent" android:layout_height="48dp" android:background="@drawable/bg_rounded_input" android:layout_marginTop="4dp" android:layout_marginBottom="16dp" android:paddingHorizontal="16dp" android:textColor="@color/text_primary" android:textColorHint="#80E3E5E8" android:inputType="text" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Username"
+                    android:textColor="@color/text_primary"
+                    android:textSize="12sp" />
 
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Email" android:textColor="@color/text_primary" android:textSize="12sp" />
-                <EditText android:id="@+id/etEmail" android:layout_width="match_parent" android:layout_height="48dp" android:background="@drawable/bg_rounded_input" android:layout_marginTop="4dp" android:layout_marginBottom="16dp" android:paddingHorizontal="16dp" android:textColor="@color/text_primary" android:inputType="textEmailAddress" />
+                <EditText
+                    android:id="@+id/etUsername"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/bg_input_dark"
+                    android:inputType="text"
+                    android:paddingHorizontal="16dp"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="#80E3E5E8" />
 
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Alergen Utama" android:textColor="@color/text_primary" android:textSize="12sp" />
-                <com.google.android.material.chip.ChipGroup android:id="@+id/chipGroupAllergen" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:layout_marginBottom="8dp" app:chipSpacing="8dp" />
-                <AutoCompleteTextView android:id="@+id/autoCompleteAllergen" android:layout_width="match_parent" android:layout_height="48dp" android:background="@drawable/bg_rounded_input" android:hint="Cari alergen (misal: Susu)" android:paddingHorizontal="16dp" android:textColorHint="#80E3E5E8" android:textColor="@color/text_primary" android:layout_marginBottom="16dp" android:inputType="text" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Email"
+                    android:textColor="@color/text_primary"
+                    android:textSize="12sp" />
+                <EditText
+                    android:id="@+id/etEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_input_dark"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="16dp"
+                    android:paddingHorizontal="16dp"
+                    android:textColor="@color/text_primary"
+                    android:inputType="textEmailAddress" />
 
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Password" android:textColor="@color/text_primary" android:textSize="12sp" />
-                <EditText android:id="@+id/etPassword" android:layout_width="match_parent" android:layout_height="48dp" android:background="@drawable/bg_rounded_input" android:layout_marginTop="4dp" android:layout_marginBottom="16dp" android:paddingHorizontal="16dp" android:textColor="@color/text_primary" android:inputType="textPassword" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Alergen Utama"
+                    android:textColor="@color/text_primary"
+                    android:textSize="12sp" />
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupAllergen"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="8dp"
+                    app:chipSpacing="8dp" />
+                <AutoCompleteTextView
+                    android:id="@+id/autoCompleteAllergen"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_input_dark"
+                    android:hint="Cari alergen (misal: Susu)"
+                    android:paddingHorizontal="16dp"
+                    android:textColorHint="#80E3E5E8"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="16dp"
+                    android:inputType="text" />
 
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Confirm Password" android:textColor="@color/text_primary" android:textSize="12sp" />
-                <EditText android:id="@+id/etConfirmPassword" android:layout_width="match_parent" android:layout_height="48dp" android:background="@drawable/bg_rounded_input" android:layout_marginTop="4dp" android:layout_marginBottom="32dp" android:paddingHorizontal="16dp" android:textColor="@color/text_primary" android:inputType="textPassword" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Password"
+                    android:textColor="@color/text_primary"
+                    android:textSize="12sp" />
+                <EditText
+                    android:id="@+id/etPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_input_dark"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="16dp"
+                    android:paddingHorizontal="16dp"
+                    android:textColor="@color/text_primary"
+                    android:inputType="textPassword" />
 
-                <com.google.android.material.button.MaterialButton android:id="@+id/btnSubmitDaftar" android:layout_width="match_parent" android:layout_height="56dp" android:text="Daftar" android:textAllCaps="false" android:textSize="16sp" android:textColor="@color/bg_main" app:backgroundTint="@color/accent_primary" app:cornerRadius="12dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Confirm Password"
+                    android:textColor="@color/text_primary"
+                    android:textSize="12sp" />
+                <EditText
+                    android:id="@+id/etConfirmPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_input_dark"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="32dp"
+                    android:paddingHorizontal="16dp"
+                    android:textColor="@color/text_primary"
+                    android:inputType="textPassword" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSubmitDaftar"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="Daftar"
+                    android:textAllCaps="false"
+                    android:textColor="@color/bg_main"
+                    android:textSize="16sp"
+                    app:backgroundTint="@color/accent_primary"
+                    app:cornerRadius="12dp" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>

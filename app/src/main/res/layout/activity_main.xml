@@ -27,6 +27,7 @@
         app:itemIconSize="24dp"
         app:itemRippleColor="#1A10B981"
         app:labelVisibilityMode="selected"
-        app:menu="@menu/bottom_nav_menu" />
+        app:menu="@menu/bottom_nav_menu"
+        app:itemIconTint="@null"/>
 
 </LinearLayout>

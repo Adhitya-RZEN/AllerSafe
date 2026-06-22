@@ -29,13 +29,14 @@ import com.example.allersafe.data.model.AllergenProfile
 import com.example.allersafe.data.model.AllergenType
 import com.example.allersafe.data.model.ProductDBModel
 import com.example.allersafe.data.model.ScanResult
+import com.example.allersafe.data.model.ScanStatus
+import com.example.allersafe.data.model.ScanStatus.*
 import com.example.allersafe.data.repository.AuthRepository
 import com.example.allersafe.data.repository.HistoryRepository
 import com.example.allersafe.data.repository.ScanRepository
 import com.example.allersafe.databinding.FragmentHomeBinding
 import com.example.allersafe.engine.AllergenEngine
 import com.example.allersafe.engine.SynonymMap
-import com.example.allersafe.ui.MainActivity
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
@@ -66,6 +67,23 @@ class HomeFragment : Fragment() {
         setupRecyclerViews()
         setupSearch()
         loadHistoryData()
+
+        // Tombol Empty State -> Beralih ke pencarian
+        binding.btnEmptySearch.setOnClickListener {
+            binding.etSearch.requestFocus()
+        }
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (!hidden) {
+            loadHistoryData()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadHistoryData()
     }
 
     private fun setupRecyclerViews() {
@@ -93,9 +111,7 @@ class HomeFragment : Fragment() {
         binding.etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: Editable?) {
-                // Bisa tambahkan debouncing search di sini jika perlu
-            }
+            override fun afterTextChanged(s: Editable?) {}
         })
     }
 
@@ -104,7 +120,17 @@ class HomeFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             val result = historyRepo.getScanHistory(uid)
             if (result.isSuccess) {
-                historyAdapter.updateData(result.getOrDefault(emptyList()))
+                val data = result.getOrDefault(emptyList())
+                historyAdapter.updateData(data)
+
+                // VISIBILITY RULES: Empty State Layout vs RecyclerView
+                if (data.isEmpty()) {
+                    binding.rvHistory.visibility = View.GONE
+                    binding.layoutEmptyHistory.visibility = View.VISIBLE
+                } else {
+                    binding.rvHistory.visibility = View.VISIBLE
+                    binding.layoutEmptyHistory.visibility = View.GONE
+                }
             }
         }
     }
@@ -141,7 +167,7 @@ class HomeFragment : Fragment() {
 
         val rv = dialogView.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rvSearchResults)
         rv.layoutManager = LinearLayoutManager(requireContext())
-        
+
         val adapter = SearchProductAdapter(products) { product ->
             dialog.dismiss()
             analisisProdukTerpilih(product)
@@ -164,7 +190,7 @@ class HomeFragment : Fragment() {
                 val scanResult = AllergenEngine.analyze(
                     productName = product.name,
                     productBrand = product.brand,
-                    imageUrl = product.imageUrl, // FIX: Pass imageUrl
+                    imageUrl = product.imageUrl,
                     rawIngredients = product.rawIngredientsText,
                     userProfile = user?.allergenProfile ?: AllergenProfile(),
                     userId = uid
@@ -173,10 +199,9 @@ class HomeFragment : Fragment() {
                 scanRepo.saveScanResult(scanResult)
                 loadHistoryData()
                 binding.rvHistory.scrollToPosition(0)
-                
-                // Tampilkan hasil scan
+
                 showScanResultDialog(scanResult)
-                
+
             } catch (e: Exception) {
                 Toast.makeText(requireContext(), "Gagal menganalisis produk", Toast.LENGTH_SHORT).show()
             } finally {
@@ -198,9 +223,26 @@ class HomeFragment : Fragment() {
 
         tvName.text = scanResult.productName
         tvBrand.text = scanResult.productBrand
-        tvStatus.text = scanResult.scanStatus.name
 
-        // Tampilkan gambar produk
+        // --- LOGIKA WARNA DAN TEKS DINAMIS ---
+        when (scanResult.scanStatus) {
+            ScanStatus.DANGER -> {
+                tvStatus.text = "BAHAYA: MENGANDUNG ALERGEN"
+                tvStatus.setTextColor(requireContext().getColor(R.color.danger_text))
+            }
+            ScanStatus.WARNING -> {
+                tvStatus.text = "AWAS: KONTAMINASI SILANG"
+                // Anda bisa mengganti warnanya dengan warna kuning/oranye jika sudah menambahkannya di colors.xml
+                tvStatus.setTextColor(requireContext().getColor(R.color.text_secondary))
+            }
+            ScanStatus.SAFE -> {
+                tvStatus.text = "AMAN DIKONSUMSI"
+                // Menggunakan warna hijau yang otomatis menyesuaikan dengan Dark/Light mode
+                tvStatus.setTextColor(requireContext().getColor(R.color.alergen_safe))
+            }
+
+        }
+
         Glide.with(this)
             .load(scanResult.imageUrl.ifEmpty { R.drawable.ic_placeholder_product })
             .placeholder(R.drawable.ic_placeholder_product)
@@ -211,9 +253,9 @@ class HomeFragment : Fragment() {
             dialog.dismiss()
             showIngredientDetailDialog(scanResult)
         }
-        
+
         dialogView.findViewById<Button>(R.id.btnDoneScan).setOnClickListener { dialog.dismiss() }
-        
+
         dialog.show()
     }
 

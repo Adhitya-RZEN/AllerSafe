@@ -12,10 +12,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.example.allersafe.R
 import com.example.allersafe.data.repository.AuthRepository
 import com.example.allersafe.data.repository.HistoryRepository
 import com.example.allersafe.databinding.FragmentSettingsBinding
 import com.example.allersafe.ui.FirstActivity
+import com.example.allersafe.ui.MainActivity
 import kotlinx.coroutines.launch
 
 class SettingsFragment : Fragment() {
@@ -78,22 +80,30 @@ class SettingsFragment : Fragment() {
                 .setNegativeButton("Batal", null)
                 .show()
         }
-
-        binding.btnHelpCenter.setOnClickListener {
-            Toast.makeText(requireContext(), "Membuka Pusat Bantuan...", Toast.LENGTH_SHORT).show()
-        }
-        binding.btnFeedback.setOnClickListener {
-            Toast.makeText(requireContext(), "Membuka Form Masukan...", Toast.LENGTH_SHORT).show()
-        }
     }
 
     private fun clearUserHistory() {
         val uid = authRepo.getCurrentUser()?.uid ?: return
-        Toast.makeText(requireContext(), "Menghapus riwayat...", Toast.LENGTH_SHORT).show()
+        
+        // Tampilkan loading
+        binding.progressBar.visibility = View.VISIBLE
+        binding.btnClearHistory.isEnabled = false
+        
         viewLifecycleOwner.lifecycleScope.launch {
             val result = historyRepo.clearScanHistory(uid)
-            val msg = if (result.isSuccess) "Semua riwayat berhasil dihapus" else "Gagal menghapus riwayat."
-            Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+            
+            // Sembunyikan loading
+            binding.progressBar.visibility = View.GONE
+            binding.btnClearHistory.isEnabled = true
+
+            if (result.isSuccess) {
+                Toast.makeText(requireContext(), "Semua riwayat berhasil dihapus", Toast.LENGTH_SHORT).show()
+                
+                // Refresh: Arahkan user kembali ke HomeFragment agar data terupdate otomatis
+                (activity as? MainActivity)?.navigateTo(R.id.nav_home)
+            } else {
+                Toast.makeText(requireContext(), "Gagal menghapus riwayat.", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

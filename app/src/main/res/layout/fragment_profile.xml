@@ -2,105 +2,206 @@
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_main"
     android:scrollbars="none"
     android:clipToPadding="false"
-    android:paddingBottom="32dp">
+    android:paddingBottom="32dp"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp">
+        android:orientation="vertical">
 
-        <!-- VIEW MODE -->
+        <!-- ============================================== -->
+        <!-- VIEW MODE (MODERNIZED)                         -->
+        <!-- ============================================== -->
         <LinearLayout
             android:id="@+id/layoutViewMode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
             android:orientation="vertical"
-            android:gravity="center_horizontal"
             android:visibility="visible">
 
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/imgViewProfile"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:scaleType="centerCrop"
-                android:src="@android:drawable/ic_menu_camera"
-                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
-                android:background="@color/border_color"
-                android:layout_marginBottom="16dp" />
-
+            <!-- Screen Title -->
             <TextView
-                android:id="@+id/tvViewUsername"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Memuat nama..."
+                android:text="Profil Pengguna"
                 android:textSize="24sp"
                 android:textStyle="bold"
-                android:fontFamily="sans-serif-medium"
-                android:textColor="@color/text_primary" />
-
-            <TextView
-                android:id="@+id/tvViewEmail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Memuat email..."
-                android:textSize="14sp"
-                android:textColor="@color/text_secondary"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="24dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnGoToEdit"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Edit Profil"
-                android:textAllCaps="false"
-                app:cornerRadius="20dp"
-                app:strokeColor="@color/border_color"
                 android:textColor="@color/text_primary"
-                android:layout_marginBottom="32dp"/>
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="24dp"
+                android:layout_marginHorizontal="24dp" />
 
-            <TextView
+            <!-- Profile Summary Card -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Alergen Anda"
-                android:textColor="@color/text_primary"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="16dp" />
+                android:layout_marginHorizontal="24dp"
+                app:cardBackgroundColor="@color/surface_card"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="2dp"
+                app:strokeWidth="0dp">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvViewAllergens"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:paddingTop="32dp"
+                    android:paddingBottom="32dp"
+                    android:paddingHorizontal="24dp">
+
+                    <!-- Avatar -->
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/imgViewProfile"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/camera_svgrepo_com"
+                        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+                        android:background="@color/border_color"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Name -->
+                    <TextView
+                        android:id="@+id/tvViewUsername"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="Budi Santoso"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textAlignment="center"
+                        android:textColor="@color/text_primary"
+                        android:layout_marginBottom="4dp" />
+
+                    <!-- Email -->
+                    <TextView
+                        android:id="@+id/tvViewEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="budi.santoso@email.com"
+                        android:textSize="14sp"
+                        android:textAlignment="center"
+                        android:textColor="@color/text_secondary"
+                        android:layout_marginBottom="20dp" />
+
+                    <!-- Edit Profile Button -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnGoToEdit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="52dp"
+                        android:text="Edit Profil"
+                        android:textAllCaps="false"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        app:cornerRadius="14dp"
+                        app:backgroundTint="@color/accent_primary"
+                        android:paddingHorizontal="32dp"
+                        android:layout_marginBottom="32dp" />
+
+                    <!-- Divider -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/border_color"
+                        android:layout_marginBottom="24dp" />
+
+                    <!-- Allergen Summary Section -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal">
+
+                        <TextView
+                            android:id="@+id/tvAllergenCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:text="3 Active Allergens"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/accent_primary"
+                            android:layout_marginBottom="16dp" />
+
+                        <!-- Material Chips (Replaces RecyclerView) -->
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/cgViewAllergens"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:singleLine="false"
+                            app:chipSpacingVertical="8dp"
+                            app:chipSpacingHorizontal="8dp"
+                            android:gravity="center">
+
+                            <!-- Tools preview chips (Invisible at runtime) -->
+                            <com.google.android.material.chip.Chip
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                tools:text="Susu"
+                                app:chipBackgroundColor="@color/bg_main"
+                                android:textColor="@color/text_primary" />
+                            <com.google.android.material.chip.Chip
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                tools:text="Gandum/Gluten"
+                                app:chipBackgroundColor="@color/bg_main"
+                                android:textColor="@color/text_primary" />
+                        </com.google.android.material.chip.ChipGroup>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Danger Zone -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                android:layout_marginBottom="32dp" />
+                android:orientation="vertical"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="32dp">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnLogout"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:text="Logout Akun"
-                android:textAllCaps="false"
-                android:textSize="16sp"
-                android:textColor="@color/danger_text" />
+
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/surface_card"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="#FCA5A5">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnLogout"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:text="Logout Akun"
+                        android:textAllCaps="false"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#EF4444" />
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
         </LinearLayout>
 
-        <!-- EDIT MODE -->
+        <!-- ============================================== -->
+        <!-- EDIT MODE (PRESERVED LOGIC)                    -->
+        <!-- ============================================== -->
         <LinearLayout
             android:id="@+id/layoutEditMode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:visibility="gone"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="32dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -111,8 +212,9 @@
 
                 <ImageView
                     android:id="@+id/btnBackToView"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:padding="12dp"
                     android:src="@android:drawable/ic_menu_revert"
                     app:tint="@color/text_primary"
                     android:background="?attr/selectableItemBackgroundBorderless"
@@ -128,7 +230,7 @@
                     android:textStyle="bold"
                     android:textColor="@color/text_primary"
                     android:textAlignment="center"
-                    android:layout_marginEnd="32dp"/>
+                    android:layout_marginEnd="48dp"/>
             </LinearLayout>
 
             <FrameLayout
@@ -157,27 +259,27 @@
                     app:tint="@color/accent_primary" />
             </FrameLayout>
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Username" android:textColor="@color/text_primary" android:textSize="12sp"/>
-            <EditText android:id="@+id/etEditUsername" android:layout_width="match_parent" android:layout_height="48dp" android:background="@drawable/bg_rounded_input" android:layout_marginTop="4dp" android:layout_marginBottom="16dp" android:paddingHorizontal="16dp" android:textColor="@color/text_primary" android:hint="Nama tampilan" android:textColorHint="@color/text_secondary" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Username" android:textColor="@color/text_primary" android:textSize="14sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+            <EditText android:id="@+id/etEditUsername" android:layout_width="match_parent" android:layout_height="52dp" android:background="@drawable/bg_rounded_input" android:layout_marginBottom="16dp" android:paddingHorizontal="16dp" android:textColor="@color/text_primary" android:hint="Nama tampilan" android:textColorHint="@color/text_secondary" />
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tanggal Lahir" android:textColor="@color/text_primary" android:textSize="12sp"/>
-            <EditText android:id="@+id/etEditDOB" android:layout_width="match_parent" android:layout_height="48dp" android:background="@drawable/bg_rounded_input" android:layout_marginTop="4dp" android:layout_marginBottom="16dp" android:paddingHorizontal="16dp" android:textColor="@color/text_primary" android:hint="Misal: 29 September 2004" android:textColorHint="@color/text_secondary" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tanggal Lahir" android:textColor="@color/text_primary" android:textSize="14sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+            <EditText android:id="@+id/etEditDOB" android:layout_width="match_parent" android:layout_height="52dp" android:background="@drawable/bg_rounded_input" android:layout_marginBottom="16dp" android:paddingHorizontal="16dp" android:textColor="@color/text_primary" android:hint="Misal: 29 September 2004" android:textColorHint="@color/text_secondary" />
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Jenis Kelamin" android:textColor="@color/text_primary" android:textSize="12sp"/>
-            <EditText android:id="@+id/etEditGender" android:layout_width="match_parent" android:layout_height="48dp" android:background="@drawable/bg_rounded_input" android:layout_marginTop="4dp" android:layout_marginBottom="16dp" android:paddingHorizontal="16dp" android:textColor="@color/text_primary" android:hint="Pria / Wanita" android:textColorHint="@color/text_secondary" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Jenis Kelamin" android:textColor="@color/text_primary" android:textSize="14sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+            <EditText android:id="@+id/etEditGender" android:layout_width="match_parent" android:layout_height="52dp" android:background="@drawable/bg_rounded_input" android:layout_marginBottom="16dp" android:paddingHorizontal="16dp" android:textColor="@color/text_primary" android:hint="Pria / Wanita" android:textColorHint="@color/text_secondary" />
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Edit Alergen" android:textColor="@color/text_primary" android:textSize="12sp" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Edit Alergen" android:textColor="@color/text_primary" android:textSize="14sp" android:textStyle="bold" android:layout_marginBottom="8dp" />
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chipGroupEditAllergen"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
                 android:layout_marginBottom="8dp"
                 app:chipSpacing="8dp" />
+
             <AutoCompleteTextView
                 android:id="@+id/autoCompleteAllergen"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="52dp"
                 android:background="@drawable/bg_rounded_input"
                 android:hint="Ketik untuk tambah alergen..."
                 android:paddingHorizontal="16dp"
@@ -193,10 +295,9 @@
                 android:text="Simpan Perubahan"
                 android:textAllCaps="false"
                 android:textSize="16sp"
-                android:textColor="@color/bg_main"
+                android:textColor="@color/white"
                 app:backgroundTint="@color/accent_primary"
-                app:cornerRadius="12dp" />
+                app:cornerRadius="14dp" />
         </LinearLayout>
-
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

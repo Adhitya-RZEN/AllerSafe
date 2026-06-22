@@ -57,10 +57,10 @@
             android:layout_height="56dp"
             android:text="Daftar"
             android:textAllCaps="false"
+            android:textColor="@color/text_primary"
             app:cornerRadius="12dp"
             app:strokeColor="@color/accent_primary"
-            android:textColor="@color/text_primary"
-            app:strokeWidth="1.5dp"/>
+            app:strokeWidth="1.5dp" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
