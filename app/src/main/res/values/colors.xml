@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="bg_main">#F0F2F5</color> <color name="surface_card">#FFFFFF</color>
-    <color name="text_primary">#16181D</color>
-    <color name="text_secondary">#8016181D</color>
-    <color name="accent_primary">#27B67D</color>
+    <color name="accent_primary">#10B981</color>
+    <color name="border_color">#E5E7EB</color>
+    <color name="danger_text">#B91C1C</color>
+    <color name="danger_bg">#FEE2E2</color>
+
     <color name="alert_danger">#FF5252</color>
 
     <color name="bg_input">#FFFFFF</color>
@@ -11,4 +12,7 @@
 
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
+    <color name="bg_main">#F9FAFB</color> <color name="surface_card">#FFFFFF</color> <color name="text_primary">#111827</color> <color name="text_secondary">#6B7280</color>
+
+
 </resources>

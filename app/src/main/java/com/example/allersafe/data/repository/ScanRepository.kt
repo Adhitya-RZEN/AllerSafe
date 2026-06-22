@@ -17,10 +17,10 @@ class ScanRepository {
     companion object {
         private const val COLLECTION_USERS = "users"
         private const val SUBCOLLECTION_HISTORY = "history"
-        private const val TIMEOUT_DURATION = 10000L
+        private const val TIMEOUT_DURATION = 15000L // Increased timeout
 
-        private const val PAGE_SIZE_SINGLE = 10
-        private const val PAGE_SIZE_MULTIPLE = 30
+        private const val PAGE_SIZE_SINGLE = 20
+        private const val PAGE_SIZE_MULTIPLE = 50
     }
 
     private val retrofit = Retrofit.Builder()
@@ -40,27 +40,28 @@ class ScanRepository {
             )
 
             if (response.isSuccessful && response.body() != null) {
-                val results = response.body()!!.products
+                val results = response.body()?.products ?: emptyList()
 
-                val productsWithIngredients = results.filter {
-                    !it.ingredientsText.isNullOrEmpty()
+                // Filter items that have at least a name and ingredients
+                val validProducts = results.mapNotNull { item ->
+                    val name = item.getBestName()
+                    val ingredients = item.getBestIngredients()
+                    if (name != null && ingredients != null) {
+                        ProductDBModel(
+                            id = UUID.randomUUID().toString(),
+                            name = name,
+                            normalizedName = ProductDBModel.normalizeName(name),
+                            brand = item.brands ?: "Tidak diketahui",
+                            imageUrl = item.getBestImage() ?: "",
+                            rawIngredientsText = ingredients
+                        )
+                    } else null
                 }
 
-                val bestMatch = productsWithIngredients.firstOrNull {
-                    it.productName?.lowercase()?.contains(cleanQuery) == true
-                } ?: productsWithIngredients.firstOrNull()
-
-                if (bestMatch != null) {
-                    val finalName = bestMatch.productName ?: queryName
-                    return@withTimeout ProductDBModel(
-                        id = UUID.randomUUID().toString(),
-                        name = finalName,
-                        normalizedName = ProductDBModel.normalizeName(finalName),
-                        brand = bestMatch.brands ?: "Tidak diketahui",
-                        imageUrl = bestMatch.imageUrl ?: "", // Mapping imageUrl
-                        rawIngredientsText = bestMatch.ingredientsText!!
-                    )
-                }
+                // Return best match or first valid result
+                return@withTimeout validProducts.firstOrNull {
+                    it.name.lowercase().contains(cleanQuery)
+                } ?: validProducts.firstOrNull()
             }
             return@withTimeout null
         }
@@ -76,32 +77,38 @@ class ScanRepository {
     }
 
     suspend fun searchMultipleProducts(queryName: String): List<ProductDBModel> {
-        return withTimeout(TIMEOUT_DURATION) {
-            val cleanQuery = queryName.trim().lowercase()
+        return try {
+            withTimeout(TIMEOUT_DURATION) {
+                val cleanQuery = queryName.trim().lowercase()
 
-            val response = api.searchProducts(
-                searchQuery = cleanQuery,
-                pageSize = PAGE_SIZE_MULTIPLE
-            )
+                val response = api.searchProducts(
+                    searchQuery = cleanQuery,
+                    pageSize = PAGE_SIZE_MULTIPLE
+                )
 
-            if (response.isSuccessful && response.body() != null) {
-                val results = response.body()!!.products
-                results.mapNotNull { item ->
-                    val validName = item.productName?.takeIf { it.isNotBlank() }
-                        ?: item.brands?.takeIf { it.isNotBlank() }
-
-                    if (validName != null) {
-                        ProductDBModel(
-                            name = validName,
-                            brand = item.brands ?: "Tidak diketahui",
-                            imageUrl = item.imageUrl ?: "", // Mapping imageUrl
-                            rawIngredientsText = item.ingredientsText ?: ""
-                        )
-                    } else null
+                if (response.isSuccessful && response.body() != null) {
+                    val results = response.body()?.products ?: emptyList()
+                    results.mapNotNull { item ->
+                        val validName = item.getBestName()
+                        // Some products might not have ingredients text in the search list,
+                        // but we still want to show them so the user can try to select them.
+                        // However, AllergenEngine needs ingredients.
+                        if (validName != null) {
+                            ProductDBModel(
+                                name = validName,
+                                brand = item.brands ?: "Tidak diketahui",
+                                imageUrl = item.getBestImage() ?: "",
+                                rawIngredientsText = item.getBestIngredients() ?: ""
+                            )
+                        } else null
+                    }
+                } else {
+                    emptyList()
                 }
-            } else {
-                throw Exception("Gagal mendapat data dari server")
             }
+        } catch (e: Exception) {
+            android.util.Log.e("ScanRepository", "Search failed", e)
+            emptyList()
         }
     }
 }

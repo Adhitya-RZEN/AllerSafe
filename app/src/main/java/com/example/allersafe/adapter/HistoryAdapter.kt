@@ -19,7 +19,7 @@ class HistoryAdapter(
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvName: TextView = view.findViewById(R.id.tvProductName)
-        val tvAllergen: TextView = view.findViewById(R.id.tvAllergenType)
+        val tvAllergen: TextView = view.findViewById(R.id.tvAllergenWarning)
         val imgProduct: ImageView = view.findViewById(R.id.imgProduct)
     }
 
