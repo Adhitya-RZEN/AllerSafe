@@ -14,7 +14,7 @@
         android:theme="@style/Theme.AllerSafe">
 
         <activity
-            android:name=".ui.FirstActivity"
+            android:name=".ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,10 +22,9 @@
             </intent-filter>
         </activity>
 
-        <!-- ProfileActivity dan SettingsActivity DIHAPUS dari sini -->
         <activity android:name=".ui.LoginActivity" />
         <activity android:name=".ui.RegisterActivity" />
-        <activity android:name=".ui.MainActivity" />
+
 
     </application>
 </manifest>
